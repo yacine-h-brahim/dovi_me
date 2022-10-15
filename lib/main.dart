@@ -1,4 +1,5 @@
 import 'package:dovi_me/style/themes.dart';
+import 'package:dovi_me/views/pages/log_in.dart';
 import 'package:dovi_me/views/pages/sign_up.dart';
 import 'package:flutter/material.dart';
 
@@ -23,7 +24,7 @@ class MyApp extends StatelessWidget {
               iconTheme: IconThemeData(color: blackich),
               backgroundColor: Colors.white),
           fontFamily: 'Poppins'),
-      home: const SignUp(),
+      home: const LogIn(),
     );
   }
 }
