@@ -1,6 +1,7 @@
 import 'package:dovi_me/style/themes.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:get/get.dart';
 
 import '../widgtes/back_button.dart';
 
@@ -168,8 +169,7 @@ class _CartState extends State<Cart> {
                 ),
               ),
               onTap: () {
-                Navigator.pushReplacement(context,
-                    MaterialPageRoute(builder: (context) => const Cart()));
+                Get.to(const Cart());
               }),
           const SizedBox(height: 27),
         ]),

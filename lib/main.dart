@@ -2,6 +2,7 @@ import 'package:dovi_me/style/themes.dart';
 import 'package:dovi_me/views/pages/log_in.dart';
 import 'package:dovi_me/views/pages/sign_up.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
 void main() {
   runApp(const MyApp());
@@ -12,7 +13,7 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return GetMaterialApp(
       debugShowCheckedModeBanner: false,
       themeMode: ThemeMode.light,
       theme: ThemeData(

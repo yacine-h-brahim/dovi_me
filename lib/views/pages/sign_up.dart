@@ -1,8 +1,11 @@
 import 'package:dovi_me/style/custom_paint.dart';
 import 'package:dovi_me/style/themes.dart';
+import 'package:dovi_me/views/pages/home_page.dart';
 import 'package:dovi_me/views/pages/log_in.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:get/get.dart';
 
 class SignUp extends StatefulWidget {
   const SignUp({super.key});
@@ -68,9 +71,12 @@ class _SignUpState extends State<SignUp> {
                                       decoration: const InputDecoration(
                                         filled: true,
                                         fillColor: lighBlue,
+                                        enabledBorder: UnderlineInputBorder(
+                                            borderSide: BorderSide(
+                                          color: blackich,
+                                        )),
                                         focusedBorder: UnderlineInputBorder(
                                             borderSide: BorderSide(
-                                          width: 1,
                                           color: greenich,
                                         )),
                                       ),
@@ -93,9 +99,12 @@ class _SignUpState extends State<SignUp> {
                                       decoration: const InputDecoration(
                                         filled: true,
                                         fillColor: lighBlue,
+                                        enabledBorder: UnderlineInputBorder(
+                                            borderSide: BorderSide(
+                                          color: blackich,
+                                        )),
                                         focusedBorder: UnderlineInputBorder(
                                             borderSide: BorderSide(
-                                          width: 1,
                                           color: greenich,
                                         )),
                                       ),
@@ -136,14 +145,16 @@ class _SignUpState extends State<SignUp> {
                                                     })),
                                         filled: true,
                                         fillColor: lighBlue,
+                                        enabledBorder:
+                                            const UnderlineInputBorder(
+                                                borderSide: BorderSide(
+                                          color: blackich,
+                                        )),
                                         focusedBorder:
                                             const UnderlineInputBorder(
                                                 borderSide: BorderSide(
-                                          width: 1,
                                           color: greenich,
                                         )),
-                                        // label: Text('Password',
-                                        //     style: themes.subtitleLableText)
                                       ),
                                       validator: (value) {
                                         if (value == null || value.isEmpty) {
@@ -173,54 +184,43 @@ class _SignUpState extends State<SignUp> {
                                       ),
                                     ),
                                   ),
-                                  onTap: () {
-                                    // Navigator.pushReplacement(
-                                    //     context,
-                                    //     MaterialPageRoute(
-                                    //         builder: (context) => const MyHomePage()));
-                                  }),
+                                  onTap: () => Get.to(const MyHomePage())),
                             ),
                             const SizedBox(height: 10),
                             Align(
-                              child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: const [
-                                    Expanded(
-                                      // flex: 1,
+                                child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: const [
+                                  Expanded(
                                       child: Divider(
-                                        height: 40,
-                                        endIndent: 10,
-                                        color: blackich,
-                                      ),
-                                    ),
-                                    Text('Or'),
-                                    Expanded(
-                                      // flex: 1,
+                                          height: 40,
+                                          endIndent: 10,
+                                          color: blackich)),
+                                  Text('Or'),
+                                  Expanded(
                                       child: Divider(
-                                        indent: 10,
-                                        height: 40,
-                                        color: blackich,
-                                      ),
-                                    )
-                                  ]),
-                            ),
+                                          indent: 10,
+                                          height: 40,
+                                          color: blackich))
+                                ])),
                             CircleAvatar(
-                              radius: 30,
-                              backgroundColor: lighBlue,
-                              child: SvgPicture.asset(
-                                'images/flat-color-icons_google.svg',
-                              ),
-                            ),
+                                radius: 30,
+                                backgroundColor: lighBlue,
+                                child: SvgPicture.asset(
+                                    'images/flat-color-icons_google.svg')),
                             const SizedBox(height: 8),
                             Align(
                               child: RichText(
-                                  text: TextSpan(text: '', children: [
-                                TextSpan(
-                                    text: 'already have account? ',
-                                    style: themes.subtitleLableText),
-                                TextSpan(
-                                    text: 'Log In', style: themes.bodyText2)
-                              ])),
+                                  text: TextSpan(
+                                      text: 'already have account? ',
+                                      style: themes.subtitleLableText,
+                                      children: [
+                                    TextSpan(
+                                        text: 'Log In',
+                                        style: themes.bodyText2,
+                                        recognizer: TapGestureRecognizer()
+                                          ..onTap = () => Get.to(const LogIn()))
+                                  ])),
                             )
                           ])),
                 ),

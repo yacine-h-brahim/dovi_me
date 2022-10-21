@@ -8,10 +8,13 @@ class Profile extends StatefulWidget {
 }
 
 class _ProfileState extends State<Profile> {
-  final GlobalKey _formKey = GlobalKey<FormState>();
-
   @override
   Widget build(BuildContext context) {
-    return Container();
+    return Scaffold(
+      appBar: AppBar(
+        elevation: 0,
+      ),
+      body: Container(color: Colors.amber),
+    );
   }
 }

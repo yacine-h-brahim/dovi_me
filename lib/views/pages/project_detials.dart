@@ -3,6 +3,7 @@ import 'package:dovi_me/views/pages/cart.dart';
 import 'package:dovi_me/views/widgtes/product_card.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import '../widgtes/back_button.dart';
 
@@ -156,10 +157,7 @@ class _ProjectDetialsState extends State<ProjectDetials> {
                 ),
               ),
             ),
-            onTap: () {
-              Navigator.pushReplacement(context,
-                  MaterialPageRoute(builder: (context) => const Cart()));
-            }),
+            onTap: () => Get.to(const Cart())),
         floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat);
   }
 }

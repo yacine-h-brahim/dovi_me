@@ -2,6 +2,7 @@ import 'package:dovi_me/views/pages/my_product.dart';
 import 'package:dovi_me/views/pages/profile.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:get/get.dart';
 
 import '../../style/themes.dart';
 
@@ -35,28 +36,20 @@ Widget drawerWidget(BuildContext context) {
           title: Text('All Projects',
               style: themes.buttonText.copyWith(fontSize: 17)),
           trailing: const Icon(Icons.keyboard_arrow_right_outlined),
-          onTap: () {
-            Navigator.pop(context);
-          }),
+          onTap: () => Get.back()),
       ListTile(
           leading: SvgPicture.asset('images/product_page_icon.svg',
               color: blackich, height: 25, width: 25),
           title: Text('All Products',
               style: themes.buttonText.copyWith(fontSize: 17)),
           trailing: const Icon(Icons.keyboard_arrow_right_outlined),
-          onTap: () {
-            Navigator.push(context,
-                MaterialPageRoute(builder: (context) => const MyProducts()));
-          }),
+          onTap: () => Get.to(const MyProducts())),
       ListTile(
           leading: SvgPicture.asset('images/profile.svg'),
           title:
               Text('Profile', style: themes.buttonText.copyWith(fontSize: 17)),
           trailing: const Icon(Icons.keyboard_arrow_right_outlined),
-          onTap: () {
-            Navigator.push(context,
-                MaterialPageRoute(builder: (context) => const Profile()));
-          }),
+          onTap: () => Get.to(const Profile())),
       Expanded(child: Container()),
       Row(
         children: [

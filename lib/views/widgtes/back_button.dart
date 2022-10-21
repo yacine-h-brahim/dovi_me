@@ -1,10 +1,11 @@
 import 'package:dovi_me/style/themes.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
 Widget backButton(BuildContext context) {
   return InkWell(
     onTap: () {
-      Navigator.pop(context);
+      Get.back();
     },
     child: Container(
         padding: const EdgeInsets.only(left: 8),

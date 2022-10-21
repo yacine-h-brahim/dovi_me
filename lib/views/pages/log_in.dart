@@ -1,8 +1,10 @@
-import 'package:dovi_me/style/custom_paint.dart';
 import 'package:dovi_me/style/themes.dart';
 import 'package:dovi_me/views/pages/home_page.dart';
+import 'package:dovi_me/views/pages/sign_up.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:get/get.dart';
 
 class LogIn extends StatefulWidget {
   const LogIn({super.key});
@@ -67,6 +69,10 @@ class _LogInState extends State<LogIn> {
                                       decoration: const InputDecoration(
                                         filled: true,
                                         fillColor: lighBlue,
+                                        enabledBorder: UnderlineInputBorder(
+                                            borderSide: BorderSide(
+                                          color: blackich,
+                                        )),
                                         focusedBorder: UnderlineInputBorder(
                                             borderSide: BorderSide(
                                           color: greenich,
@@ -109,6 +115,11 @@ class _LogInState extends State<LogIn> {
                                                       })),
                                           filled: true,
                                           fillColor: lighBlue,
+                                          enabledBorder:
+                                              const UnderlineInputBorder(
+                                                  borderSide: BorderSide(
+                                            color: blackich,
+                                          )),
                                           focusedBorder:
                                               const UnderlineInputBorder(
                                                   borderSide: BorderSide(
@@ -142,10 +153,7 @@ class _LogInState extends State<LogIn> {
                                             .copyWith(color: Colors.white),
                                       ))),
                                   onTap: () {
-                                    // Navigator.pushReplacement(
-                                    //     context,
-                                    //     MaterialPageRoute(
-                                    //         builder: (context) => const MyHomePage()));
+                                    Get.to(const MyHomePage());
                                   }),
                             ),
                             const SizedBox(height: 10),
@@ -182,45 +190,20 @@ class _LogInState extends State<LogIn> {
                             const SizedBox(height: 8),
                             Align(
                               child: RichText(
-                                  text: TextSpan(text: '', children: [
-                                TextSpan(
-                                    text: 'don\'t have account yet? ',
-                                    style: themes.subtitleLableText),
-                                TextSpan(
-                                    text: 'Create now', style: themes.bodyText2)
-                              ])),
+                                  text: TextSpan(
+                                      text: 'don\'t have account yet? ',
+                                      style: themes.subtitleLableText,
+                                      children: [
+                                    TextSpan(
+                                        text: 'Create now',
+                                        style: themes.bodyText2,
+                                        recognizer: TapGestureRecognizer()
+                                          ..onTap = () => Get.to(SignUp))
+                                  ])),
                             )
                           ])),
                 ),
               ])),
     );
   }
-}
-
-class MyCustomClipper extends CustomClipper<Path> {
-  @override
-  Path getClip(Size size) {
-    double h = size.height;
-    double w = size.width;
-    Path path = Path();
-    path.lineTo(0, 0);
-    path.lineTo(0, h);
-    // Offset point1 = Offset(10, size.height - 10);
-    Offset thePick1 = Offset(w * .15, size.height - (size.height * .65));
-    Offset thePick = Offset(size.width * .5, size.height - (size.height * .8));
-    Offset thePick2 =
-        Offset(size.width * .85, size.height - (size.height * .65));
-    // Offset point2 = Offset(size.width - 10, size.height - 10);
-    path.quadraticBezierTo(thePick1.dx, thePick1.dy, thePick2.dx, thePick2.dy);
-    // path.quadraticBezierTo(thePick.dx, thePick.dy, thePick2.dx, thePick2.dy);
-    path.quadraticBezierTo(thePick2.dx, thePick2.dy, size.width, 0);
-    path.quadraticBezierTo(thePick2.dx, thePick2.dy, size.width, 0);
-
-    path.lineTo(size.width, 0);
-    path.close();
-    return path;
-  }
-
-  @override
-  bool shouldReclip(covariant CustomClipper<Path> oldClipper) => false;
 }
