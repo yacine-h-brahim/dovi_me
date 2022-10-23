@@ -1,3 +1,4 @@
+import 'package:dovi_me/views/pages/log_in.dart';
 import 'package:dovi_me/views/pages/my_product.dart';
 import 'package:dovi_me/views/pages/profile.dart';
 import 'package:flutter/material.dart';
@@ -55,13 +56,14 @@ Widget drawerWidget(BuildContext context) {
         children: [
           Expanded(child: Container()),
           InkWell(
+              onTap: () => Get.to(const LogIn()),
               child: Row(children: [
-            Text(
-              'Log Out',
-              style: themes.buttonText.copyWith(fontSize: 17),
-            ),
-            const Icon(Icons.logout_outlined)
-          ])),
+                Text(
+                  'Log Out',
+                  style: themes.buttonText.copyWith(fontSize: 17),
+                ),
+                const Icon(Icons.logout_outlined)
+              ])),
         ],
       )
     ]),

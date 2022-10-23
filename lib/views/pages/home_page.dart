@@ -1,5 +1,7 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dovi_me/views/pages/project_detials.dart';
 import 'package:dovi_me/views/widgtes/home_card.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 
 import '../../style/themes.dart';
@@ -15,8 +17,12 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   Themes themes = Themes();
+  final CollectionReference<Map<String, dynamic>> products =
+      FirebaseFirestore.instance.collection('products1');
+
   @override
   Widget build(BuildContext context) {
+    print(products.id);
     return Scaffold(
       backgroundColor: Colors.white,
       drawer: drawerWidget(context),

@@ -1,10 +1,15 @@
+import 'dart:convert';
+
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dovi_me/style/custom_paint.dart';
 import 'package:dovi_me/style/themes.dart';
 import 'package:dovi_me/views/pages/home_page.dart';
 import 'package:dovi_me/views/pages/log_in.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 
 class SignUp extends StatefulWidget {
@@ -16,11 +21,15 @@ class SignUp extends StatefulWidget {
 
 class _SignUpState extends State<SignUp> {
   Themes themes = Themes();
-  final GlobalKey _formKey = GlobalKey<FormState>();
+  final GlobalKey<FormState> formKey = GlobalKey<FormState>();
   bool visiblEye = false;
+  String? _username;
+  String? _email;
+  String? _password;
 
   @override
   Widget build(BuildContext context) {
+    print(utf8.encode(_password!));
     return SafeArea(
       child: Scaffold(
           resizeToAvoidBottomInset: true,
@@ -58,7 +67,7 @@ class _SignUpState extends State<SignUp> {
                               ],
                             ),
                             Form(
-                                key: _formKey,
+                                key: formKey,
                                 child: Column(
                                   children: [
                                     Align(
@@ -184,7 +193,38 @@ class _SignUpState extends State<SignUp> {
                                       ),
                                     ),
                                   ),
-                                  onTap: () => Get.to(const MyHomePage())),
+                                  onTap: () async {
+                                    final FirebaseAuth firebaseAuth =
+                                        FirebaseAuth.instance;
+                                    final CollectionReference users =
+                                        FirebaseFirestore.instance
+                                            .collection('users');
+                                    Map user = {
+                                      'id': users.doc(),
+                                      'username': _username,
+                                      'email': _email,
+                                      'pwd': utf8.encode(_password!)
+                                    };
+                                    if (formKey.currentState!.validate()) {
+                                      try {
+                                        // getting signed up with email and password and creating a new account//
+                                        await firebaseAuth
+                                            .createUserWithEmailAndPassword(
+                                                email: _email!,
+                                                password: _password!);
+                                        // adding user to users collection//
+                                        Fluttertoast.showToast(
+                                            msg: 'Signed up successfully',
+                                            backgroundColor: Colors.red);
+                                        await users.add(user);
+                                      } catch (e) {
+                                        Fluttertoast.showToast(
+                                            msg: e.toString(),
+                                            backgroundColor: Colors.red);
+                                      }
+                                    }
+                                    Get.to(const MyHomePage());
+                                  }),
                             ),
                             const SizedBox(height: 10),
                             Align(

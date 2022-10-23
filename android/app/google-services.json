@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "666983729606",
+    "project_id": "dovime-18223",
+    "storage_bucket": "dovime-18223.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:666983729606:android:95b5d9b48ac979a1088ac7",
+        "android_client_info": {
+          "package_name": "com.example.dovi_me"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "666983729606-dgmo79jgihierekijifg1cb9k0pi7bvj.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDO5O6iakhE74i2LKlC_BPMhnq5cTxfZf8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "666983729606-dgmo79jgihierekijifg1cb9k0pi7bvj.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
