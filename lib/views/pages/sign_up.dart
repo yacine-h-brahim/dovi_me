@@ -92,6 +92,8 @@ class _SignUpState extends State<SignUp> {
                                       validator: (value) {
                                         if (value == null || value.isEmpty) {
                                           return 'this field is required!!';
+                                        } else if (validateEmail()) {
+                                          return 'email not valid';
                                         } else {
                                           return null;
                                         }
