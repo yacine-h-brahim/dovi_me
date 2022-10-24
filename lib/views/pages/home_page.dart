@@ -1,8 +1,10 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:dovi_me/modules/prject.dart';
+import 'package:dovi_me/modules/user.dart';
 import 'package:dovi_me/views/pages/project_detials.dart';
 import 'package:dovi_me/views/widgtes/home_card.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
 import '../../style/themes.dart';
 import '../widgtes/drawer.dart';
@@ -17,12 +19,28 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   Themes themes = Themes();
-  final CollectionReference<Map<String, dynamic>> products =
-      FirebaseFirestore.instance.collection('products1');
+//////
+  List<Project> _getPojects(QuerySnapshot querySnapshot) {
+    return querySnapshot.docs
+        .map((doc) => Project(
+              id: doc['id'],
+              customerName: doc['customerName'] ?? '',
+              dateTime: doc['dateTime'],
+              ownerId: doc['ownerId'] ?? '',
+              discount: doc['discount'] ?? 0,
+              subTotal: doc['subTotal'] ?? 0,
+              total: doc['total'] ?? 0,
+            ))
+        .toList();
+  }
 
+  ///
+  final CollectionReference<Map<String, dynamic>> projects =
+      FirebaseFirestore.instance.collection('projects');
   @override
   Widget build(BuildContext context) {
-    print(products.id);
+    final userController = Get.find<UserAccount>();
+
     return Scaffold(
       backgroundColor: Colors.white,
       drawer: drawerWidget(context),
@@ -30,41 +48,52 @@ class _MyHomePageState extends State<MyHomePage> {
           automaticallyImplyLeading: true,
           elevation: 0,
           backgroundColor: Colors.white,
-          actions: const [
+          actions: [
             Padding(
-              padding: EdgeInsets.only(right: 16.0),
+              padding: const EdgeInsets.only(right: 16.0),
               child: CircleAvatar(
                   radius: 20,
-                  backgroundImage: AssetImage('images/tomHeddlaston.jpg')),
+                  backgroundImage: NetworkImage(userController.photoUrl!)),
             )
           ]),
-      body: Center(
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16.0),
-          child: Column(
-            children: [
-              const SizedBox(height: 35),
-              Row(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      body: StreamBuilder(
+          stream: projects
+              // .where('ownerId', isEqualTo: userController.id)
+              .snapshots()
+              .map((event) {
+            print('event size ${event.size}');
+            return _getPojects(event);
+          }),
+          builder: (context, snapshot) {
+            print('snapshot: ${snapshot.data}');
+            return Center(
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                child: Column(
                   children: [
-                    Text('All Projects', style: themes.buttonText),
-                    plusButton(context, const ProjectDetials())
-                  ]),
-              const SizedBox(height: 10),
-              Expanded(
-                child: ListView.builder(
-                  physics: const BouncingScrollPhysics(),
-                  padding: const EdgeInsets.all(0),
-                  itemCount: 4,
-                  itemBuilder: (context, index) =>
-                      card(index: index, context: context),
+                    const SizedBox(height: 35),
+                    Row(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text('All Projects', style: themes.buttonText),
+                          plusButton(context, const ProjectDetials())
+                        ]),
+                    const SizedBox(height: 10),
+                    Expanded(
+                      child: ListView.builder(
+                        physics: const BouncingScrollPhysics(),
+                        padding: const EdgeInsets.all(0),
+                        itemCount: 4,
+                        itemBuilder: (context, index) =>
+                            card(index: index, context: context),
+                      ),
+                    )
+                  ],
                 ),
-              )
-            ],
-          ),
-        ),
-      ),
+              ),
+            );
+          }),
     );
   }
 }
