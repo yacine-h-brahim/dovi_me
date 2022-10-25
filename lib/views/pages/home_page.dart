@@ -19,24 +19,14 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   Themes themes = Themes();
-//////
-  List<Project> _getPojects(QuerySnapshot querySnapshot) {
-    return querySnapshot.docs
-        .map((doc) => Project(
-              id: doc['id'],
-              customerName: doc['customerName'] ?? '',
-              dateTime: doc['dateTime'],
-              ownerId: doc['ownerId'] ?? '',
-              discount: doc['discount'] ?? 0,
-              subTotal: doc['subTotal'] ?? 0,
-              total: doc['total'] ?? 0,
-            ))
-        .toList();
-  }
-
-  ///
   final CollectionReference<Map<String, dynamic>> projects =
       FirebaseFirestore.instance.collection('projects');
+//////
+  Stream<QuerySnapshot<Map<String, dynamic>>> projectsFromFirestore(
+      String ownerId) {
+    return projects.where('ownerId', isEqualTo: ownerId).snapshots();
+  }
+
   @override
   Widget build(BuildContext context) {
     final userController = Get.find<UserAccount>();
@@ -56,44 +46,45 @@ class _MyHomePageState extends State<MyHomePage> {
                   backgroundImage: NetworkImage(userController.photoUrl!)),
             )
           ]),
-      body: StreamBuilder(
-          stream: projects
-              // .where('ownerId', isEqualTo: userController.id)
-              .snapshots()
-              .map((event) {
-            print('event size ${event.size}');
-            return _getPojects(event);
-          }),
-          builder: (context, snapshot) {
-            print('snapshot: ${snapshot.data}');
-            return Center(
-              child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                child: Column(
-                  children: [
-                    const SizedBox(height: 35),
-                    Row(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text('All Projects', style: themes.buttonText),
-                          plusButton(context, const ProjectDetials())
-                        ]),
-                    const SizedBox(height: 10),
-                    Expanded(
-                      child: ListView.builder(
-                        physics: const BouncingScrollPhysics(),
-                        padding: const EdgeInsets.all(0),
-                        itemCount: 4,
-                        itemBuilder: (context, index) =>
-                            card(index: index, context: context),
-                      ),
-                    )
-                  ],
-                ),
-              ),
-            );
-          }),
+      body: Center(
+        child: StreamBuilder(
+            stream: projectsFromFirestore(userController.id!),
+            builder: (context, snapshot) {
+              if (snapshot.hasError) {
+                return Text(snapshot.error.toString(),
+                    style: const TextStyle(color: Colors.red));
+              } else if (snapshot.connectionState == ConnectionState.waiting) {
+                return const CircularProgressIndicator();
+              } else {
+                return Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                  child: Column(
+                    children: [
+                      const SizedBox(height: 35),
+                      Row(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text('All Projects', style: themes.buttonText),
+                            plusButton(context, const ProjectDetials())
+                          ]),
+                      const SizedBox(height: 10),
+                      Expanded(
+                        child: ListView.builder(
+                            physics: const BouncingScrollPhysics(),
+                            padding: const EdgeInsets.all(0),
+                            itemCount: snapshot.data!.size,
+                            itemBuilder: (context, index) => card(
+                                index: index,
+                                project: snapshot.data!.docs[index].data(),
+                                context: context)),
+                      )
+                    ],
+                  ),
+                );
+              }
+            }),
+      ),
     );
   }
 }

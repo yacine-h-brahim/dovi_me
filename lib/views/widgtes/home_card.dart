@@ -1,8 +1,12 @@
 import 'package:dovi_me/style/themes.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:intl/intl.dart';
 
-Widget card({required int index, required BuildContext context}) {
+Widget card(
+    {required int index,
+    required Map<String, dynamic> project,
+    required BuildContext context}) {
   const List<List<Color>> gradientColors = [
     [blueDark1, blueDark2],
     [pink1, pink2],
@@ -39,7 +43,7 @@ Widget card({required int index, required BuildContext context}) {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text(
-                    'Hadj Brahim YACINE',
+                    project['customerName'],
                     style: themes.bodyText1.copyWith(color: whitich),
                   ),
                   Row(
@@ -52,10 +56,10 @@ Widget card({required int index, required BuildContext context}) {
                       const SizedBox(width: 8),
                       Column(
                         children: [
-                          Text('S: 01/01/2022',
+                          Text('S: ${project['dateTime']}',
                               style: themes.bodyText2
                                   .copyWith(fontSize: 12, color: whitich)),
-                          Text('E: 31/12/2022',
+                          Text('E: ${project['dateTimeEnd']}',
                               style: themes.bodyText2
                                   .copyWith(fontSize: 12, color: whitich))
                         ],
@@ -63,9 +67,8 @@ Widget card({required int index, required BuildContext context}) {
                     ],
                   ),
                   Row(children: [
-                    // ignore: prefer_const_constructors
                     Text(
-                      '${100000000} DA',
+                      '${project['total']} DA',
                       style: themes.buttonText.copyWith(color: lightGreen),
                     ),
                     const Spacer(),
@@ -85,8 +88,8 @@ Widget card({required int index, required BuildContext context}) {
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
                               SvgPicture.asset('images/product_page_icon.svg'),
-                              const Text('17 Products',
-                                  style: TextStyle(
+                              Text('${project['productsCount']} products',
+                                  style: const TextStyle(
                                       fontSize: 10,
                                       color: whitich,
                                       fontWeight: FontWeight.w500))

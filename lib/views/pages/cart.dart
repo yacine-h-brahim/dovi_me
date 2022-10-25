@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dovi_me/style/themes.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -15,6 +16,16 @@ class Cart extends StatefulWidget {
 class _CartState extends State<Cart> {
   Themes themes = Themes();
   List<String> items = ['', '', '', '', '', '', '', ''];
+
+//methods
+  ///methods////
+  addNewProject(Map data) async {
+    final CollectionReference projects =
+        FirebaseFirestore.instance.collection('projects');
+
+    projects.add(data);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
