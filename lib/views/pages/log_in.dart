@@ -22,7 +22,7 @@ class LogIn extends StatefulWidget {
 class _LogInState extends State<LogIn> {
   Themes themes = Themes();
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-  bool visiblEye = false;
+  bool visiblEye = true;
   String? _email;
   String? _pwd;
 

@@ -1,5 +1,4 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:dovi_me/modules/prject.dart';
 import 'package:dovi_me/modules/user.dart';
 import 'package:dovi_me/views/pages/project_detials.dart';
 import 'package:dovi_me/views/widgtes/home_card.dart';

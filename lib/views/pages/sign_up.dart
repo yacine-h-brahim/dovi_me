@@ -36,10 +36,10 @@ class _SignUpState extends State<SignUp> {
 
   Themes themes = Themes();
   final GlobalKey<FormState> formKey = GlobalKey<FormState>();
-  bool visiblEye = false;
+  bool visiblEye = true;
   String? _username;
   String? _email;
-  String? _pwd = 'password';
+  String? _pwd;
 
   @override
   Widget build(BuildContext context) {

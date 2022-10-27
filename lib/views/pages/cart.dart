@@ -1,5 +1,9 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:dovi_me/controllers/collections/collections.dart';
+import 'package:dovi_me/modules/prduct.dart';
+import 'package:dovi_me/modules/project.dart';
 import 'package:dovi_me/style/themes.dart';
+import 'package:dovi_me/views/widgtes/add_min.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
@@ -8,14 +12,14 @@ import '../widgtes/back_button.dart';
 
 class Cart extends StatefulWidget {
   const Cart({super.key});
-
+  // final List<Product>? products;
   @override
   State<Cart> createState() => _CartState();
 }
 
 class _CartState extends State<Cart> {
   Themes themes = Themes();
-  List<String> items = ['', '', '', '', '', '', '', ''];
+  final projectController = Get.find<Project>();
 
 //methods
   ///methods////
@@ -28,6 +32,18 @@ class _CartState extends State<Cart> {
 
   @override
   Widget build(BuildContext context) {
+    num? subtotal =
+        projectController.subTotal != null ? projectController.subTotal : 0;
+    num? total = projectController.total != null ? projectController.total : 0;
+    num? discount =
+        projectController.discount != null ? projectController.discount : 0;
+    for (var i = 0; i < projectController.products!.length; i++) {
+      subtotal = subtotal! +
+          (projectController.products![i]!.unitPrice! *
+              projectController.products![i]!.quantity!);
+    }
+    total = subtotal! - discount!;
+
     return Scaffold(
       backgroundColor: Colors.white,
       body: Padding(
@@ -49,127 +65,107 @@ class _CartState extends State<Cart> {
           Expanded(
               child: ListView.builder(
             padding: const EdgeInsets.only(top: 10),
-            itemCount: items.length,
+            itemCount: projectController.products!.length,
             physics: const BouncingScrollPhysics(),
             itemBuilder: (context, index) {
-              return Dismissible(
-                direction: DismissDirection.endToStart,
-                key: UniqueKey(),
-                background:
-                    Row(mainAxisAlignment: MainAxisAlignment.end, children: [
-                  Container(
-                      height: 35,
-                      width: 35,
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(12545),
-                        color: const Color.fromRGBO(237, 0, 0, 0.58),
-                      ),
-                      child: const Icon(Icons.close, color: Colors.white)),
-                  const SizedBox(width: 21)
-                ]),
-                onDismissed: (direction) {
-                  setState(() {
-                    items.removeAt(index);
-                    //REMOVE ITEM FROM THE LIST
-                  });
-                },
-                child: Container(
-                  padding: const EdgeInsets.all(16),
-                  margin: const EdgeInsets.only(bottom: 12),
-                  decoration: BoxDecoration(
-                      color: grey48, borderRadius: BorderRadius.circular(12)),
-                  child: Row(
-                    children: [
-                      Container(
-                          height: 70,
-                          width: 70,
-                          decoration: BoxDecoration(
-                              color: lightGreen,
-                              borderRadius: BorderRadius.circular(12),
-                              image: const DecorationImage(
-                                  fit: BoxFit.fill,
-                                  image:
-                                      AssetImage('images/tomHeddlaston.jpg')))),
-                      const SizedBox(width: 14),
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text('Platform', style: themes.bodyText1),
-                          Text(
-                            '1000000 Da/m²',
-                            style: themes.bodyText2
-                                .copyWith(fontSize: 13, color: greenich),
-                          ),
-                        ],
-                      ),
-                      const Spacer(),
-                      Row(
-                        children: [
-                          Container(
-                              height: 28,
-                              width: 28,
-                              decoration: BoxDecoration(
-                                  color: lightGreen,
-                                  borderRadius: BorderRadius.circular(12)),
-                              child: Center(
-                                child: InkWell(
-                                    child: Text('-',
-                                        style: themes.bodyText2
-                                            .copyWith(fontSize: 20)),
-                                    onTap: () {}),
-                              )),
-                          const SizedBox(width: 8),
-                          Text('8', style: themes.headline2),
-                          const SizedBox(width: 8),
-                          Container(
-                              height: 28,
-                              width: 28,
-                              decoration: BoxDecoration(
-                                  color: lightGreen,
-                                  borderRadius: BorderRadius.circular(12)),
-                              child: Center(
-                                child: InkWell(
-                                    child: Text('+',
-                                        style: themes.bodyText2
-                                            .copyWith(fontSize: 20)),
-                                    onTap: () {}),
-                              ))
-                        ],
-                      )
-                    ],
+              int quantity = projectController.products![index]!.quantity!;
+
+              return Visibility(
+                visible: projectController.products![index]!.quantity != 0,
+                child: Dismissible(
+                  direction: DismissDirection.endToStart,
+                  key: UniqueKey(),
+                  background:
+                      Row(mainAxisAlignment: MainAxisAlignment.end, children: [
+                    Container(
+                        height: 35,
+                        width: 35,
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(12545),
+                          color: const Color.fromRGBO(237, 0, 0, 0.58),
+                        ),
+                        child: const Icon(Icons.close, color: Colors.white)),
+                    const SizedBox(width: 21)
+                  ]),
+                  onDismissed: (direction) {
+                    setState(() {
+                      projectController.products!.removeAt(index);
+                      //REMOVE ITEM FROM THE LIST
+                    });
+                  },
+                  child: Container(
+                    padding: const EdgeInsets.all(16),
+                    margin: const EdgeInsets.only(bottom: 12),
+                    decoration: BoxDecoration(
+                        color: grey48, borderRadius: BorderRadius.circular(12)),
+                    child: Row(
+                      children: [
+                        Container(
+                            height: 70,
+                            width: 70,
+                            decoration: BoxDecoration(
+                                color: lightGreen,
+                                borderRadius: BorderRadius.circular(12),
+                                image: DecorationImage(
+                                    fit: BoxFit.fill,
+                                    image: NetworkImage(projectController
+                                        .products![index]!.photoCover!)))),
+                        const SizedBox(width: 14),
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(projectController.products![index]!.name!,
+                                style: themes.bodyText1),
+                            Text(
+                              '${projectController.products![index]!.unitPrice!} Da/${projectController.products![index]!.unit!}',
+                              style: themes.bodyText2
+                                  .copyWith(fontSize: 13, color: greenich),
+                            ),
+                          ],
+                        ),
+                        const Spacer(),
+                        Quantity(index: index)
+                      ],
+                    ),
                   ),
                 ),
               );
             },
           )),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text('Subtotal', style: themes.bodyText2),
-              Text('101000 Da', style: themes.bodyText2),
-            ],
-          ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text('Discount', style: themes.bodyText2),
-              Text('-1000 Da',
-                  style: themes.bodyText2.copyWith(color: Colors.red)),
-            ],
-          ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text('Total Price', style: themes.bodyText2),
-              Text('100000 Da',
-                  style: themes.bodyText2.copyWith(color: greenich))
-            ],
+          Obx(
+            () => Column(
+              children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text('Subtotal', style: themes.bodyText2),
+                    Text('${subtotal} Da', style: themes.bodyText2),
+                  ],
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text('Discount', style: themes.bodyText2),
+                    Text('-${discount}Da',
+                        style: themes.bodyText2.copyWith(color: Colors.red)),
+                  ],
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text('Total Price', style: themes.bodyText2),
+                    Text('${total} Da',
+                        style: themes.bodyText2.copyWith(color: greenich))
+                  ],
+                ),
+              ],
+            ),
           ),
           const SizedBox(height: 25),
           InkWell(
               child: Container(
                 height: 60,
-                width: MediaQuery.of(context).size.width * .6,
+                width: Get.width * .6,
                 decoration: BoxDecoration(
                     color: lightGreen, borderRadius: BorderRadius.circular(12)),
                 child: Center(
@@ -180,7 +176,22 @@ class _CartState extends State<Cart> {
                 ),
               ),
               onTap: () {
-                Get.to(const Cart());
+                // Get.to(const Cart());
+                //creating array list of productsquantity
+                final List<String?> productsQuantityList = [];
+                for (Product? element in projectController.products!) {
+                  final doc = productQuantity.doc();
+                  doc.set({
+                    'id': doc.id,
+                    'productId': element!.id,
+                    'projectId': element.id,
+                    'quantity': element.quantity,
+                  });
+                  productsQuantityList.add(doc.id);
+                }
+                // save data into firestore//
+
+                projects.doc(projectController.id).set({});
               }),
           const SizedBox(height: 27),
         ]),

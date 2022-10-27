@@ -2,8 +2,9 @@
 import 'dart:convert';
 
 import 'package:dovi_me/modules/prduct.dart';
+import 'package:get/get.dart';
 
-class Project {
+class Project extends GetxController {
   String? id;
   String? customerName;
   String? ownerId;
@@ -15,7 +16,7 @@ class Project {
   //list of products//
   List<Product?>? products;
   Project({
-    required this.id,
+    this.id,
     this.customerName,
     this.ownerId,
     this.dateTime,
@@ -24,7 +25,9 @@ class Project {
     this.subTotal,
     this.total,
     this.products,
-  });
+  }) {
+    update();
+  }
 
   Map<String, dynamic> toMap() {
     return <String, dynamic>{
@@ -52,13 +55,6 @@ class Project {
       discount: map['discount'] != null ? map['discount'] as num : null,
       subTotal: map['subTotal'] != null ? map['subTotal'] as num : null,
       total: map['total'] != null ? map['total'] as num : null,
-      products: map['products'] != null
-          ? List<Product?>.from(
-              (map['products'] as List).map<Product?>(
-                (x) => Product?.fromMap(x as Map<String, dynamic>),
-              ),
-            )
-          : null,
     );
   }
 

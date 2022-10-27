@@ -1,8 +1,11 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:dovi_me/controllers/collections/collections.dart';
+import 'package:dovi_me/modules/prduct.dart';
+import 'package:dovi_me/modules/project.dart';
+import 'package:dovi_me/modules/user.dart';
 import 'package:dovi_me/style/themes.dart';
 import 'package:dovi_me/views/pages/cart.dart';
-import 'package:dovi_me/views/widgtes/product_card.dart';
-import 'package:firebase_core/firebase_core.dart';
+import 'package:dovi_me/views/widgtes/add_min.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
@@ -19,22 +22,38 @@ class ProjectDetials extends StatefulWidget {
 class _ProjectDetialsState extends State<ProjectDetials> {
   final GlobalKey<FormState> _keyForm = GlobalKey<FormState>();
   Themes themes = Themes();
-
+  List<Product> productsList = [];
   String? customerName;
-  num? discount;
+  num? discount = 0;
 
   TextEditingController startDateTimeControlor = TextEditingController();
   TextEditingController endDateTimeControlor = TextEditingController();
 
+  final userAccount = Get.find<UserAccount>();
+  int widgetN = 0;
+  int streamN = 0;
+  QuerySnapshot? productsCollection;
+
+  ///
+  // getif() async {
+  //   productsCollection =
+  //       await FirebaseFirestore.instance.collection('products').get();
+  // }
+
+  ///
   @override
   Widget build(BuildContext context) {
+    // getif();
+    print(productsCollection.runtimeType);
+    final projectController = Get.put(Project());
+
     return Scaffold(
         backgroundColor: Colors.white,
         body: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16),
             child:
                 Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-              SizedBox(height: MediaQuery.of(context).size.height * .06),
+              SizedBox(height: Get.height * .06),
               Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
                 backButton(context),
                 Text('Project Detials', style: themes.headline1),
@@ -48,10 +67,6 @@ class _ProjectDetialsState extends State<ProjectDetials> {
                   child: Column(
                     children: [
                       const SizedBox(height: 30),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        children: [],
-                      ),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
@@ -115,7 +130,7 @@ class _ProjectDetialsState extends State<ProjectDetials> {
                                     )),
                                   ),
                                   onChanged: (value) =>
-                                      discount = value as num?,
+                                      discount = num.tryParse(value),
                                   validator: (value) {
                                     if (value == null || value.isEmpty) {
                                       return 'this field is required!!';
@@ -151,10 +166,10 @@ class _ProjectDetialsState extends State<ProjectDetials> {
                                             lastDate:
                                                 DateTime.parse('2040-12-31'))
                                         .then((value) {
-                                      setState(() {
-                                        startDateTimeControlor.text =
-                                            DateFormat.yMd().format(value!);
-                                      });
+                                      startDateTimeControlor.text =
+                                          value != null
+                                              ? DateFormat.yMd().format(value)
+                                              : '';
                                     });
                                   },
                                   keyboardType: TextInputType.none,
@@ -177,6 +192,13 @@ class _ProjectDetialsState extends State<ProjectDetials> {
                                     )),
                                   ),
                                   readOnly: true,
+                                  validator: (value) {
+                                    if (value == null || value.isEmpty) {
+                                      return 'this field is required!!';
+                                    } else {
+                                      return null;
+                                    }
+                                  },
                                   controller: startDateTimeControlor,
                                 ),
                               ),
@@ -200,10 +222,9 @@ class _ProjectDetialsState extends State<ProjectDetials> {
                                             lastDate:
                                                 DateTime.parse('2040-12-31'))
                                         .then((value) {
-                                      setState(() {
-                                        endDateTimeControlor.text =
-                                            DateFormat('yMd').format(value!);
-                                      });
+                                      endDateTimeControlor.text = value != null
+                                          ? DateFormat('yMd').format(value)
+                                          : '';
                                     });
                                   },
                                   keyboardType: TextInputType.none,
@@ -226,6 +247,13 @@ class _ProjectDetialsState extends State<ProjectDetials> {
                                     )),
                                   ),
                                   readOnly: true,
+                                  validator: (value) {
+                                    if (value == null || value.isEmpty) {
+                                      return 'this field is required!!';
+                                    } else {
+                                      return null;
+                                    }
+                                  },
                                   controller: endDateTimeControlor,
                                 ),
                               ),
@@ -238,13 +266,63 @@ class _ProjectDetialsState extends State<ProjectDetials> {
               const SizedBox(height: 8),
               Text('Products', style: themes.subtitleLableText),
               Expanded(
-                  child: ListView.builder(
-                padding: const EdgeInsets.all(0),
-                itemCount: 7,
-                physics: const BouncingScrollPhysics(),
-                itemBuilder: (context, index) {
-                  //TODO: CHANGE THE LIST LINGTH TO DYNAMIC
-                  return buildProductCard(listLingth: 6, index: index);
+                  child: FutureBuilder(
+                future: products.get(),
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return const CircularProgressIndicator();
+                  } else if (snapshot.hasError) {
+                    return Text(snapshot.error.toString());
+                  } else {
+                    projectController.products = snapshot.data!.docs
+                        .map((e) => Product.fromMap(e.data()))
+                        .toList();
+                    return ListView.builder(
+                      padding: const EdgeInsets.only(bottom: 50),
+                      itemCount: projectController.products!.length,
+                      physics: const BouncingScrollPhysics(),
+                      itemBuilder: (context, index) {
+                        return Container(
+                          padding: const EdgeInsets.all(16),
+                          margin: const EdgeInsets.only(bottom: 12),
+                          decoration: BoxDecoration(
+                              color: grey48,
+                              borderRadius: BorderRadius.circular(12)),
+                          child: Row(
+                            children: [
+                              Container(
+                                  height: 70,
+                                  width: 70,
+                                  decoration: BoxDecoration(
+                                      color: lightGreen,
+                                      borderRadius: BorderRadius.circular(12),
+                                      image: DecorationImage(
+                                          fit: BoxFit.fill,
+                                          image: NetworkImage(projectController
+                                              .products![index]!
+                                              .photoCover!)))),
+                              const SizedBox(width: 14),
+                              Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                      projectController.products![index]!.name!,
+                                      style: themes.bodyText1),
+                                  Text(
+                                    '${projectController.products![index]!.unitPrice} Da/${projectController.products![index]!.unit}',
+                                    style: themes.bodyText2.copyWith(
+                                        fontSize: 13, color: greenich),
+                                  ),
+                                ],
+                              ),
+                              const Spacer(),
+                              Quantity(index: index)
+                            ],
+                          ),
+                        );
+                      },
+                    );
+                  }
                 },
               )),
             ])),
@@ -263,6 +341,14 @@ class _ProjectDetialsState extends State<ProjectDetials> {
             ),
             onTap: () {
               if (_keyForm.currentState!.validate()) {
+                //date contrainte
+
+                projectController.id = projects.doc().id;
+                projectController.customerName = customerName;
+                projectController.dateTime = startDateTimeControlor.text;
+                projectController.dateTimeEnd = endDateTimeControlor.text;
+                projectController.discount = discount;
+                projectController.ownerId = userAccount.id;
                 Get.to(const Cart());
               }
             }),
