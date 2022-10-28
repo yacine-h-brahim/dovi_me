@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dovi_me/controllers/collections/collections.dart';
 import 'package:dovi_me/modules/prduct.dart';
+import 'package:dovi_me/modules/products_list.dart';
 import 'package:dovi_me/modules/project.dart';
 import 'package:dovi_me/modules/user.dart';
 import 'package:dovi_me/style/themes.dart';
@@ -22,7 +23,6 @@ class ProjectDetials extends StatefulWidget {
 class _ProjectDetialsState extends State<ProjectDetials> {
   final GlobalKey<FormState> _keyForm = GlobalKey<FormState>();
   Themes themes = Themes();
-  List<Product> productsList = [];
   String? customerName;
   num? discount = 0;
 
@@ -30,22 +30,27 @@ class _ProjectDetialsState extends State<ProjectDetials> {
   TextEditingController endDateTimeControlor = TextEditingController();
 
   final userAccount = Get.find<UserAccount>();
-  int widgetN = 0;
-  int streamN = 0;
-  QuerySnapshot? productsCollection;
+  final projectController = Get.put(Project());
 
-  ///
-  // getif() async {
-  //   productsCollection =
-  //       await FirebaseFirestore.instance.collection('products').get();
+//Methods//
+
+  // Future<QuerySnapshot<Map<String, dynamic>>> getProducts() async {
+  //   // var productsCollection = ;
+  //   return
   // }
 
-  ///
   @override
   Widget build(BuildContext context) {
-    // getif();
-    print(productsCollection.runtimeType);
-    final projectController = Get.put(Project());
+    PrdList productsList = Get.put(PrdList());
+
+//TODO: fill productsList from products collection
+    products.get().then((value) {
+      value.docs.forEach((element) {
+        !productsList.productsList.contains(element)
+            ? productsList.productsList.add(Product.fromMap(element.data()))
+            : null;
+      });
+    });
 
     return Scaffold(
         backgroundColor: Colors.white,
@@ -266,63 +271,46 @@ class _ProjectDetialsState extends State<ProjectDetials> {
               const SizedBox(height: 8),
               Text('Products', style: themes.subtitleLableText),
               Expanded(
-                  child: FutureBuilder(
-                future: products.get(),
-                builder: (context, snapshot) {
-                  if (snapshot.connectionState == ConnectionState.waiting) {
-                    return const CircularProgressIndicator();
-                  } else if (snapshot.hasError) {
-                    return Text(snapshot.error.toString());
-                  } else {
-                    projectController.products = snapshot.data!.docs
-                        .map((e) => Product.fromMap(e.data()))
-                        .toList();
-                    return ListView.builder(
-                      padding: const EdgeInsets.only(bottom: 50),
-                      itemCount: projectController.products!.length,
-                      physics: const BouncingScrollPhysics(),
-                      itemBuilder: (context, index) {
-                        return Container(
-                          padding: const EdgeInsets.all(16),
-                          margin: const EdgeInsets.only(bottom: 12),
-                          decoration: BoxDecoration(
-                              color: grey48,
-                              borderRadius: BorderRadius.circular(12)),
-                          child: Row(
-                            children: [
-                              Container(
-                                  height: 70,
-                                  width: 70,
-                                  decoration: BoxDecoration(
-                                      color: lightGreen,
-                                      borderRadius: BorderRadius.circular(12),
-                                      image: DecorationImage(
-                                          fit: BoxFit.fill,
-                                          image: NetworkImage(projectController
-                                              .products![index]!
-                                              .photoCover!)))),
-                              const SizedBox(width: 14),
-                              Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                      projectController.products![index]!.name!,
-                                      style: themes.bodyText1),
-                                  Text(
-                                    '${projectController.products![index]!.unitPrice} Da/${projectController.products![index]!.unit}',
-                                    style: themes.bodyText2.copyWith(
-                                        fontSize: 13, color: greenich),
-                                  ),
-                                ],
-                              ),
-                              const Spacer(),
-                              Quantity(index: index)
-                            ],
-                          ),
-                        );
-                      },
-                    );
-                  }
+                  child: ListView.builder(
+                padding: const EdgeInsets.only(bottom: 50),
+                itemCount: productsList.productsList.length,
+                physics: const BouncingScrollPhysics(),
+                itemBuilder: (context, index) {
+                  return Container(
+                    padding: const EdgeInsets.all(16),
+                    margin: const EdgeInsets.only(bottom: 12),
+                    decoration: BoxDecoration(
+                        color: grey48, borderRadius: BorderRadius.circular(12)),
+                    child: Row(
+                      children: [
+                        Container(
+                            height: 70,
+                            width: 70,
+                            decoration: BoxDecoration(
+                                color: lightGreen,
+                                borderRadius: BorderRadius.circular(12),
+                                image: DecorationImage(
+                                    fit: BoxFit.fill,
+                                    image: NetworkImage(productsList
+                                        .productsList[index]!.photoCover!)))),
+                        const SizedBox(width: 14),
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(productsList.productsList[index]!.name!,
+                                style: themes.bodyText1),
+                            Text(
+                              '${productsList.productsList[index]!.unitPrice} Da/${productsList.productsList[index]!.unit}',
+                              style: themes.bodyText2
+                                  .copyWith(fontSize: 13, color: greenich),
+                            ),
+                          ],
+                        ),
+                        const Spacer(),
+                        Quantity(index: index)
+                      ],
+                    ),
+                  );
                 },
               )),
             ])),

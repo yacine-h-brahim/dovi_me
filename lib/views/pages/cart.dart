@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dovi_me/controllers/collections/collections.dart';
 import 'package:dovi_me/modules/prduct.dart';
+import 'package:dovi_me/modules/products_list.dart';
 import 'package:dovi_me/modules/project.dart';
 import 'package:dovi_me/style/themes.dart';
 import 'package:dovi_me/views/widgtes/add_min.dart';
@@ -20,29 +21,23 @@ class Cart extends StatefulWidget {
 class _CartState extends State<Cart> {
   Themes themes = Themes();
   final projectController = Get.find<Project>();
+  final productsList = Get.find<PrdList>();
 
-//methods
   ///methods////
-  addNewProject(Map data) async {
-    final CollectionReference projects =
-        FirebaseFirestore.instance.collection('projects');
-
-    projects.add(data);
-  }
 
   @override
   Widget build(BuildContext context) {
-    num? subtotal =
-        projectController.subTotal != null ? projectController.subTotal : 0;
-    num? total = projectController.total != null ? projectController.total : 0;
-    num? discount =
-        projectController.discount != null ? projectController.discount : 0;
-    for (var i = 0; i < projectController.products!.length; i++) {
-      subtotal = subtotal! +
-          (projectController.products![i]!.unitPrice! *
-              projectController.products![i]!.quantity!);
-    }
-    total = subtotal! - discount!;
+    // num? subtotal =
+    //     projectController.subTotal != null ? projectController.subTotal : 0;
+    // num? total = projectController.total != null ? projectController.total : 0;
+    // num? discount =
+    //     projectController.discount != null ? projectController.discount : 0;
+    // for (var i = 0; i < projectController.products!.length; i++) {
+    //   subtotal = subtotal! +
+    //       (projectController.products![i]!.unitPrice! *
+    //           projectController.products![i]!.quantity!);
+    // }
+    // total = subtotal! - discount!;
 
     return Scaffold(
       backgroundColor: Colors.white,
@@ -65,13 +60,13 @@ class _CartState extends State<Cart> {
           Expanded(
               child: ListView.builder(
             padding: const EdgeInsets.only(top: 10),
-            itemCount: projectController.products!.length,
+            itemCount: productsList.productsList.length,
             physics: const BouncingScrollPhysics(),
             itemBuilder: (context, index) {
-              int quantity = projectController.products![index]!.quantity!;
+              int quantity = productsList.productsList[index]!.quantity!;
 
               return Visibility(
-                visible: projectController.products![index]!.quantity != 0,
+                visible: productsList.productsList[index]!.quantity != 0,
                 child: Dismissible(
                   direction: DismissDirection.endToStart,
                   key: UniqueKey(),
@@ -89,7 +84,7 @@ class _CartState extends State<Cart> {
                   ]),
                   onDismissed: (direction) {
                     setState(() {
-                      projectController.products!.removeAt(index);
+                      productsList.productsList.removeAt(index);
                       //REMOVE ITEM FROM THE LIST
                     });
                   },
@@ -108,16 +103,16 @@ class _CartState extends State<Cart> {
                                 borderRadius: BorderRadius.circular(12),
                                 image: DecorationImage(
                                     fit: BoxFit.fill,
-                                    image: NetworkImage(projectController
-                                        .products![index]!.photoCover!)))),
+                                    image: NetworkImage(productsList
+                                        .productsList[index]!.photoCover!)))),
                         const SizedBox(width: 14),
                         Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Text(projectController.products![index]!.name!,
+                            Text(productsList.productsList[index]!.name!,
                                 style: themes.bodyText1),
                             Text(
-                              '${projectController.products![index]!.unitPrice!} Da/${projectController.products![index]!.unit!}',
+                              '${productsList.productsList[index]!.unitPrice!} Da/${productsList.productsList[index]!.unit!}',
                               style: themes.bodyText2
                                   .copyWith(fontSize: 13, color: greenich),
                             ),
@@ -132,34 +127,28 @@ class _CartState extends State<Cart> {
               );
             },
           )),
-          Obx(
-            () => Column(
-              children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text('Subtotal', style: themes.bodyText2),
-                    Text('${subtotal} Da', style: themes.bodyText2),
-                  ],
-                ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text('Discount', style: themes.bodyText2),
-                    Text('-${discount}Da',
-                        style: themes.bodyText2.copyWith(color: Colors.red)),
-                  ],
-                ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text('Total Price', style: themes.bodyText2),
-                    Text('${total} Da',
-                        style: themes.bodyText2.copyWith(color: greenich))
-                  ],
-                ),
-              ],
-            ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text('Subtotal', style: themes.bodyText2),
+              Text('${projectController.subTotal} Da', style: themes.bodyText2),
+            ],
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text('Discount', style: themes.bodyText2),
+              Text('-${projectController.discount}Da',
+                  style: themes.bodyText2.copyWith(color: Colors.red)),
+            ],
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text('Total Price', style: themes.bodyText2),
+              Text('${projectController.total} Da',
+                  style: themes.bodyText2.copyWith(color: greenich))
+            ],
           ),
           const SizedBox(height: 25),
           InkWell(
@@ -178,20 +167,20 @@ class _CartState extends State<Cart> {
               onTap: () {
                 // Get.to(const Cart());
                 //creating array list of productsquantity
-                final List<String?> productsQuantityList = [];
-                for (Product? element in projectController.products!) {
-                  final doc = productQuantity.doc();
-                  doc.set({
-                    'id': doc.id,
-                    'productId': element!.id,
-                    'projectId': element.id,
-                    'quantity': element.quantity,
-                  });
-                  productsQuantityList.add(doc.id);
-                }
-                // save data into firestore//
+                // final List<String?> productsQuantityList = [];
+                // for (Product? element in projectController.products!) {
+                //   final doc = productQuantity.doc();
+                //   doc.set({
+                //     'id': doc.id,
+                //     'productId': element!.id,
+                //     'projectId': element.id,
+                //     'quantity': element.quantity,
+                //   });
+                //   productsQuantityList.add(doc.id);
+                // }
+                // // save data into firestore//
 
-                projects.doc(projectController.id).set({});
+                // projects.doc(projectController.id).set({});
               }),
           const SizedBox(height: 27),
         ]),

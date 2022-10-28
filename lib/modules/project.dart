@@ -1,7 +1,6 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'dart:convert';
 
-import 'package:dovi_me/modules/prduct.dart';
 import 'package:get/get.dart';
 
 class Project extends GetxController {
@@ -13,8 +12,9 @@ class Project extends GetxController {
   num? discount;
   num? subTotal;
   num? total;
+  num? productsCount;
   //list of products//
-  List<Product?>? products;
+  List<String>? productsItems;
   Project({
     this.id,
     this.customerName,
@@ -24,7 +24,8 @@ class Project extends GetxController {
     this.discount,
     this.subTotal,
     this.total,
-    this.products,
+    this.productsCount,
+    this.productsItems,
   }) {
     update();
   }
@@ -39,7 +40,8 @@ class Project extends GetxController {
       'discount': discount,
       'subTotal': subTotal,
       'total': total,
-      'products': products!.map((x) => x?.toMap()).toList(),
+      'productsCount': productsCount,
+      'productsItems': productsItems,
     };
   }
 
@@ -55,6 +57,11 @@ class Project extends GetxController {
       discount: map['discount'] != null ? map['discount'] as num : null,
       subTotal: map['subTotal'] != null ? map['subTotal'] as num : null,
       total: map['total'] != null ? map['total'] as num : null,
+      productsCount:
+          map['productsCount'] != null ? map['productsCount'] as num : null,
+      productsItems: map['productsItems'] != null
+          ? List<String>.from((map['productsItems'] as List<String>))
+          : null,
     );
   }
 

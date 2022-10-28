@@ -17,19 +17,23 @@ Widget drawerWidget(BuildContext context) {
           Color.fromRGBO(221, 244, 214, 1),
           Color.fromRGBO(163, 254, 165, 1)
         ], begin: Alignment.topCenter, end: Alignment.bottomCenter)),
-    height: MediaQuery.of(context).size.height,
-    width: MediaQuery.of(context).size.width * .75,
+    height: Get.height,
+    width: Get.width * .8,
     child: Column(children: [
       DrawerHeader(
-          child: Row(crossAxisAlignment: CrossAxisAlignment.center, children: [
+          child:
+              Column(crossAxisAlignment: CrossAxisAlignment.center, children: [
         const CircleAvatar(
             radius: 35,
             backgroundImage: AssetImage('images/tomHeddlaston.jpg')),
-        const SizedBox(width: 16),
-        Column(mainAxisAlignment: MainAxisAlignment.center, children: [
-          Text('Yacine Hadj Brahim', style: themes.headline2),
-          Text('y.hadjbrahim@esi-sba.dz', style: themes.subtitleLableText)
-        ])
+        const SizedBox(width: 8),
+        Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Text('Yacine Hadj Brahim', style: themes.headline2),
+              Text('y.hadjbrahim@esi-sba.dz', style: themes.subtitleLableText)
+            ])
       ])),
       ListTile(
           leading:

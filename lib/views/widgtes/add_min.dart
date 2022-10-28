@@ -1,3 +1,4 @@
+import 'package:dovi_me/modules/products_list.dart';
 import 'package:dovi_me/modules/project.dart';
 import 'package:dovi_me/style/themes.dart';
 import 'package:flutter/material.dart';
@@ -15,7 +16,8 @@ class _QuantityState extends State<Quantity> {
   Widget build(BuildContext context) {
     Themes themes = Themes();
     final projectController = Get.find<Project>();
-    int quantity = projectController.products![widget.index!]!.quantity!;
+    final productsList = Get.find<PrdList>();
+    int quantity = productsList.productsList[widget.index!]!.quantity!;
     return Row(
       children: [
         Container(
@@ -31,12 +33,12 @@ class _QuantityState extends State<Quantity> {
                     setState(() {
                       quantity <= 0 ? 0 : quantity--;
                     });
-                    projectController.products![widget.index!]!.quantity =
+                    productsList.productsList[widget.index!]!.quantity =
                         quantity;
                   }),
             )),
         const SizedBox(width: 8),
-        Text(projectController.products![widget.index!]!.quantity.toString(),
+        Text(productsList.productsList[widget.index!]!.quantity.toString(),
             style: themes.headline2),
         const SizedBox(width: 8),
         Container(
@@ -52,7 +54,7 @@ class _QuantityState extends State<Quantity> {
                     setState(() {
                       quantity < 0 ? 0 : quantity++;
                     });
-                    projectController.products![widget.index!]!.quantity =
+                    productsList.productsList[widget.index!]!.quantity =
                         quantity;
                   }),
             ))
