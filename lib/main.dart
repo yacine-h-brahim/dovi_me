@@ -1,5 +1,6 @@
 import 'package:dovi_me/style/themes.dart';
 import 'package:dovi_me/views/pages/log_in.dart';
+import 'package:dovi_me/views/pages/try.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';

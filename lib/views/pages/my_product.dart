@@ -1,7 +1,10 @@
+import 'package:dovi_me/modules/prduct.dart';
+import 'package:dovi_me/views/pages/edit_prduct.dart';
 import 'package:dovi_me/views/pages/new_product.dart';
 import 'package:dovi_me/views/widgtes/plus_button.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:get/get.dart';
 
 import '../../style/themes.dart';
 import '../widgtes/back_button.dart';
@@ -66,8 +69,8 @@ class _MyProductsState extends State<MyProducts> {
                         ]),
                     onDismissed: (direction) {
                       setState(() {
-                        items.removeAt(index);
                         //REMOVE ITEM FROM THE LIST
+                        items.removeAt(index);
                       });
                     },
                     child: Container(
@@ -101,17 +104,31 @@ class _MyProductsState extends State<MyProducts> {
                             ],
                           ),
                           const Spacer(),
-                          Container(
+                          InkWell(
+                            onTap: () {
+                              Get.to(EditProduct(
+                                product: Product(
+                                  id: '0',
+                                  name: 'wall',
+                                  photoCover:
+                                      'https://www.gravatar.com/avatar/69eb72fa6d3f122439c458d6feb37185?s=256&d=identicon&r=PG&f=1',
+                                  quantity: 10,
+                                  unit: 'm²',
+                                  unitPrice: 2000,
+                                ),
+                              ));
+                            },
+                            child: Container(
                               height: 28,
                               width: 28,
                               decoration: BoxDecoration(
                                   color: lightGreen,
                                   borderRadius: BorderRadius.circular(12)),
-                              child: Center(
-                                child: InkWell(
-                                    child: const Icon(Icons.edit),
-                                    onTap: () {}),
-                              )),
+                              child: const Center(
+                                child: Icon(Icons.edit),
+                              ),
+                            ),
+                          ),
                         ],
                       ),
                     ),

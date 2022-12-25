@@ -14,6 +14,7 @@ class Product {
     this.unit,
     this.unitPrice,
     this.photoCover,
+    //will be removed later
     this.quantity = 0,
   });
 
