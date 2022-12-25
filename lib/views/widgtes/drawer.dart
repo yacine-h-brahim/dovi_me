@@ -1,3 +1,5 @@
+import 'package:dovi_me/controllers/authentication.dart';
+import 'package:dovi_me/modules/user.dart';
 import 'package:dovi_me/views/pages/log_in.dart';
 import 'package:dovi_me/views/pages/my_product.dart';
 import 'package:dovi_me/views/pages/profile.dart';
@@ -8,31 +10,37 @@ import 'package:get/get.dart';
 import '../../style/themes.dart';
 
 Widget drawerWidget(BuildContext context) {
+  final userController = Get.find<UserAccount>();
+
   Themes themes = Themes();
 
   return Container(
     decoration: const BoxDecoration(
         color: lightGreen,
-        gradient: LinearGradient(colors: [
-          Color.fromRGBO(221, 244, 214, 1),
-          Color.fromRGBO(163, 254, 165, 1)
-        ], begin: Alignment.topCenter, end: Alignment.bottomCenter)),
+        gradient: LinearGradient(
+            colors: [
+              Color.fromRGBO(221, 244, 214, 1),
+              Color.fromARGB(208, 175, 234, 176)
+            ],
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+            stops: [0.8, 0.99])),
     height: Get.height,
     width: Get.width * .8,
     child: Column(children: [
       DrawerHeader(
           child:
               Column(crossAxisAlignment: CrossAxisAlignment.center, children: [
-        const CircleAvatar(
+        CircleAvatar(
             radius: 35,
-            backgroundImage: AssetImage('images/tomHeddlaston.jpg')),
+            backgroundImage: NetworkImage(userController.photoUrl!)),
         const SizedBox(width: 8),
         Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Text('Yacine Hadj Brahim', style: themes.headline2),
-              Text('y.hadjbrahim@esi-sba.dz', style: themes.subtitleLableText)
+              Text('@${userController.username!}', style: themes.headline2),
+              Text(userController.email!, style: themes.subtitleLableText)
             ])
       ])),
       ListTile(
@@ -60,7 +68,12 @@ Widget drawerWidget(BuildContext context) {
         children: [
           Expanded(child: Container()),
           InkWell(
-              onTap: () => Get.to(const LogIn()),
+              onTap: () {
+                //log out
+
+                AuthService().logOut();
+                Get.off(const LogIn());
+              },
               child: Row(children: [
                 Text(
                   'Log Out',

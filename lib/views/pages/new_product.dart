@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
 import '../../style/themes.dart';
 import '../widgtes/back_button.dart';
@@ -10,10 +11,19 @@ class NewProduct extends StatefulWidget {
   State<NewProduct> createState() => _NewProductState();
 }
 
+enum BestTutorSite { javatpoint, w3schools, tutorialandexample }
+
+List<Map<String, dynamic>> Units = [
+  {'unit': 'm_2'},
+  {'unit': 'platform'},
+  {'unit': 'wall'}
+];
+
 class _NewProductState extends State<NewProduct> {
   Themes themes = Themes();
   final GlobalKey _keyForm = GlobalKey<FormState>();
-
+  BestTutorSite _site = BestTutorSite.javatpoint;
+  String? _unit = 'others';
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -26,7 +36,7 @@ class _NewProductState extends State<NewProduct> {
             SizedBox(height: MediaQuery.of(context).size.height * .06),
             Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
               backButton(context),
-              Text('Product Detials', style: themes.headline1),
+              Text('New Product', style: themes.headline1),
               const SizedBox(width: 50),
             ]),
             SizedBox(
@@ -101,6 +111,19 @@ class _NewProductState extends State<NewProduct> {
                               ),
                             ],
                           ),
+                          const SizedBox(height: 15),
+                          ListView.builder(
+                            itemCount: Units.length,
+                            itemBuilder: (context, index) => RadioListTile(
+                                title: Text(Units[index]['unit']),
+                                value: Units[index]['unit'],
+                                groupValue: _unit,
+                                onChanged: (value) {
+                                  setState(() {
+                                    _unit = value!;
+                                  });
+                                }),
+                          ),
                         ],
                       )),
                   Padding(
@@ -115,21 +138,25 @@ class _NewProductState extends State<NewProduct> {
                       ],
                     ),
                   ),
-                  InkWell(
-                    onTap: () {},
-                    child: Container(
-                      height: MediaQuery.of(context).size.height * .25,
-                      width: MediaQuery.of(context).size.width * .85,
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(12),
-                        color: lightGreen,
-                      ),
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          const Icon(Icons.file_download_outlined, size: 65),
-                          Text('import image', style: themes.bodyText2)
-                        ],
+                  Align(
+                    child: InkWell(
+                      onTap: () {
+                        //pick a new image from glarry for the product
+                      },
+                      child: Container(
+                        height: Get.height * .26,
+                        width: Get.width * .8,
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(12),
+                          color: lightGreen,
+                        ),
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            const Icon(Icons.file_download_outlined, size: 65),
+                            Text('import image', style: themes.bodyText2)
+                          ],
+                        ),
                       ),
                     ),
                   ),
@@ -146,7 +173,7 @@ class _NewProductState extends State<NewProduct> {
                       borderRadius: BorderRadius.circular(12)),
                   child: Center(
                     child: Text(
-                      'Save',
+                      'Add',
                       style: themes.buttonText,
                     ),
                   ),

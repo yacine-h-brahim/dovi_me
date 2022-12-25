@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:dovi_me/controllers/collections/collections.dart';
 import 'package:dovi_me/modules/user.dart';
 import 'package:dovi_me/style/themes.dart';
 import 'package:dovi_me/views/pages/home_page.dart';
@@ -9,6 +10,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
+import 'package:google_sign_in/google_sign_in.dart';
+
+import '../../controllers/authentication.dart';
 
 class SignUp extends StatefulWidget {
   const SignUp({super.key});
@@ -302,11 +306,16 @@ class _SignUpState extends State<SignUp> {
                                               height: 40,
                                               color: blackich))
                                     ])),
-                                CircleAvatar(
-                                    radius: 30,
-                                    backgroundColor: lighBlue,
-                                    child: SvgPicture.asset(
-                                        'images/flat-color-icons_google.svg')),
+                                InkWell(
+                                  onTap: () async {
+                                    AuthService().signInWithGoogle();
+                                  },
+                                  child: CircleAvatar(
+                                      radius: 30,
+                                      backgroundColor: lighBlue,
+                                      child: SvgPicture.asset(
+                                          'images/flat-color-icons_google.svg')),
+                                ),
                                 const SizedBox(height: 8),
                                 Align(
                                     child: RichText(

@@ -13,4 +13,13 @@ class UserAccount extends GetxController {
   String? pwd;
   String? username;
   String? photoUrl;
+  toMap() {
+    return {
+      'id': id,
+      'email': email,
+      'username': username,
+      'pwd': pwd,
+      'photUrl': photoUrl,
+    };
+  }
 }

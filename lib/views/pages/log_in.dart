@@ -1,4 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:dovi_me/controllers/authentication.dart';
+import 'package:dovi_me/controllers/collections/collections.dart';
 import 'package:dovi_me/controllers/validation.dart';
 import 'package:dovi_me/modules/user.dart';
 import 'package:dovi_me/style/themes.dart';
@@ -10,6 +12,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 
 //TODO: ADD REMENMBRE ME BUTTON
 class LogIn extends StatefulWidget {
@@ -42,7 +45,6 @@ class _LogInState extends State<LogIn> {
                 Expanded(
                   child: Container(
                       width: MediaQuery.of(context).size.width,
-                      // height: MediaQuery.of(context).size.height * .75,
                       padding: const EdgeInsets.symmetric(horizontal: 30),
                       decoration: const BoxDecoration(
                         borderRadius: BorderRadius.only(
@@ -180,7 +182,6 @@ class _LogInState extends State<LogIn> {
                                       final CollectionReference users =
                                           FirebaseFirestore.instance
                                               .collection('users');
-
                                       try {
                                         UserCredential userCredenials =
                                             await firebaseAuth
@@ -209,9 +210,9 @@ class _LogInState extends State<LogIn> {
 
                                           Get.off(const MyHomePage());
                                         }
-                                      } catch (e) {
+                                      } on FirebaseAuthException catch (e) {
                                         Fluttertoast.showToast(
-                                            msg: e.toString(),
+                                            msg: e.message.toString(),
                                             backgroundColor: Colors.red);
                                       }
                                     }
@@ -241,11 +242,16 @@ class _LogInState extends State<LogIn> {
                                     )
                                   ]),
                             ),
-                            CircleAvatar(
-                              radius: 30,
-                              backgroundColor: lighBlue,
-                              child: SvgPicture.asset(
-                                'images/flat-color-icons_google.svg',
+                            InkWell(
+                              onTap: () async {
+                                AuthService().signInWithGoogle();
+                              },
+                              child: CircleAvatar(
+                                radius: 30,
+                                backgroundColor: lighBlue,
+                                child: SvgPicture.asset(
+                                  'images/flat-color-icons_google.svg',
+                                ),
                               ),
                             ),
                             const SizedBox(height: 8),

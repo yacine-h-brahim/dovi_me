@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dovi_me/modules/user.dart';
+import 'package:dovi_me/views/pages/profile.dart';
 import 'package:dovi_me/views/pages/project_detials.dart';
 import 'package:dovi_me/views/widgtes/home_card.dart';
 import 'package:flutter/material.dart';
@@ -40,9 +41,14 @@ class _MyHomePageState extends State<MyHomePage> {
           actions: [
             Padding(
               padding: const EdgeInsets.only(right: 16.0),
-              child: CircleAvatar(
-                  radius: 20,
-                  backgroundImage: NetworkImage(userController.photoUrl!)),
+              child: InkWell(
+                onTap: () {
+                  Get.to(const Profile());
+                },
+                child: CircleAvatar(
+                    radius: 20,
+                    backgroundImage: NetworkImage(userController.photoUrl!)),
+              ),
             )
           ]),
       body: Center(
